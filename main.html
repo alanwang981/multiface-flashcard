@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiface Flashcard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Multiface Flashcard</h1>
+        <p>Create and study multi-face flashcards</p>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Main Page -->
+        <div class="page main-page active" id="main-page">
+            <div class="description">
+                <p>Multiface Flashcard helps you create and study flashcards with multiple faces. Perfect for learning languages, formulas, or any subject that requires memorization.</p>
+                <p>Create your own flashcards with as many faces as you need, then test your knowledge by playing through them.</p>
+            </div>
+            <!-- Buttons -->
+            <div class="button-container">
+                <button class="btn" id="create-btn">
+                    <i class="fas fa-plus"></i> Create New Flashcards
+                </button>
+                <button class="btn btn-outline" id="play-btn">
+                    <i class="fas fa-play"></i> Play Existing Flashcards
+                </button>
+                <button class="btn btn-outline" id="edit-btn">
+                    <i class="fas fa-edit"></i> Edit Existing Flashcards
+                </button>
+            </div>
+        </div>
+
+        <!-- Create Page -->
+        <div class="page create-page" id="create-page">
+            <a href="#" class="back-btn" id="back-from-create">
+                <i class="fas fa-arrow-left"></i> Back to Main
+            </a>
+            <h2>Create New Flashcards</h2>
+            
+            <div class="form-group">
+                <label for="topic-name">Topic Name</label>
+                <input type="text" id="topic-name" placeholder="Enter a name for this flashcard set">
+            </div>
+            
+            <div class="cards-container" id="cards-container">
+                <!-- Cards will be added here -->
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn" id="add-card-btn">
+                    <i class="fas fa-plus"></i> Add New Card
+                </button>
+                <button class="btn" id="save-topic-btn">
+                    <i class="fas fa-save"></i> Save Topic
+                </button>
+                <button class="btn btn-outline" id="clear-create-btn">
+                    <i class="fas fa-eraser"></i> Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Play Page -->
+        <div class="page play-page" id="play-page">
+            <a href="#" class="back-btn" id="back-from-play">
+                <i class="fas fa-arrow-left"></i> Back to Main
+            </a>
+            <h2>Play Flashcards</h2>
+            
+            <div class="form-group">
+                <label for="topic-select">Select a Topic</label>
+                <select id="topic-select" class="topic-select">
+                    <option value="">-- Select a topic --</option>
+                    <!-- Topics will be added here -->
+                </select>
+            </div>
+            
+            <div id="play-area">
+                <!-- Flashcards will be displayed here -->
+                <div class="no-topics" id="no-topics-message">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No Flashcards Available</h3>
+                    <p>Create some flashcards first to play with them</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Page -->
+        <div class="page edit-page" id="edit-page">
+            <a href="#" class="back-btn" id="back-from-edit">
+                <i class="fas fa-arrow-left"></i> Back to Main
+            </a>
+            <h2>Edit Flashcards</h2>
+            
+            <div id="edit-topics-container">
+                <!-- Topics will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Your flashcards are saved locally in your browser</p>
+    </footer>
+
+    <!-- link to script -->
+    <script src="script.js"></script>
+</body>
+</html>
