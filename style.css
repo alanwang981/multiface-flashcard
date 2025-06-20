@@ -290,6 +290,11 @@ textarea {
     opacity: 0.5;
 }
 
+#random-card {
+    margin-left: auto; /* Pushes it to the right */
+    margin-right: 10px;
+}
+
 /* Edit Page Styles */
 .edit-page {
     max-width: 800px;
@@ -345,3 +350,16 @@ footer {
 .back-btn:hover {
     text-decoration: underline;
 }
+
+/* download button */
+#download-btn {
+    margin-top: 15px;
+    background-color: #28a745 !important;
+    color: white !important;
+    border: none !important;
+}
+
+#download-btn:hover {
+    background-color: #218838 !important;
+}
+

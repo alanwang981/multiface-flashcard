@@ -15,6 +15,8 @@ const cardsContainer = document.getElementById('cards-container');
 const addCardBtn = document.getElementById('add-card-btn');
 const saveTopicBtn = document.getElementById('save-topic-btn');
 const clearCreateBtn = document.getElementById('clear-create-btn');
+const uploadBtn = document.getElementById('upload-btn');
+const jsonUploadInput = document.getElementById('json-upload');
 // Play Page Elements
 const topicSelect = document.getElementById('topic-select');
 const playArea = document.getElementById('play-area');
@@ -127,10 +129,40 @@ function saveTopic(){
     showPage('main-page');
 }
 
+// function to upload file
+function uploadFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try{
+            const uploadedData = JSON.parse(e.target.result);
+            if(!Array.isArray(uploadedData)) throw new Error("File should contain an array of flashcard topics");
+            if(uploadedData.length === 0) throw new Error("File contains no flashcard data");
+            const existingData = JSON.parse(localStorage.getItem('flashcardTopics')) || [];
+            const mergedData = [...existingData, ...uploadedData];
+            localStorage.setItem('flashcardTopics', JSON.stringify(mergedData));
+            topics = mergedData;
+            alert(`Successfully imported ${uploadedData.length} topic(s)!`);
+            loadTopicsForEdit(); // Refresh the edit view if open
+        } catch(error){ alert(`Invalid file: ${error.message}`); }
+    };
+    
+    reader.onerror = function() {
+        alert('Error reading file');
+    };
+    
+    reader.readAsText(file);
+    event.target.value = ''; // Reset input
+} 
+
 // buttons
 addCardBtn.addEventListener('click', addNewCard);
 saveTopicBtn.addEventListener('click', saveTopic);
 clearCreateBtn.addEventListener('click', clearCreateForm);
+uploadBtn.addEventListener('click', function(){ jsonUploadInput.click(); });
+jsonUploadInput.addEventListener('change', uploadFile);
 
 // ------------- "Create" page end -----------------
 
@@ -139,7 +171,6 @@ clearCreateBtn.addEventListener('click', clearCreateForm);
 document.addEventListener('DOMContentLoaded', () => {
     if(topics.length > 0) noTopicsMessage.style.display = 'none';
 });
-
 topicSelect.addEventListener('change', (e) => {
     if(e.target.value) loadTopic(e.target.value);
     else{
@@ -189,13 +220,16 @@ function renderCurrentCard() {
                 </div>
             </div>
         </div>
+        <span>Card ${currentCardIndex + 1} of ${currentTopic.cards.length}</span>
         <div class="navigation">
             <button class="btn btn-outline" id="prev-card">
                 <i class="fas fa-arrow-left"></i> Previous
             </button>
-            <span>Card ${currentCardIndex + 1} of ${currentTopic.cards.length}</span>
             <button class="btn btn-outline" id="next-card">
                 Next <i class="fas fa-arrow-right"></i>
+            </button>
+            <button class="btn btn-outline" id="random-card">
+                <i class="fas fa-random"></i> Random Card
             </button>
         </div>
     `;
@@ -208,12 +242,22 @@ function renderCurrentCard() {
     document.getElementById('prev-card').addEventListener('click', () => {
         if(currentCardIndex > 0){ // bound
             currentCardIndex--; currentFaceIndex = 0; renderCurrentCard();
+        } else{
+            currentCardIndex = currentTopic.cards[currentCardIndex].faces.length-1; 
+            currentFaceIndex = 0; renderCurrentCard();
         }
     });
     document.getElementById('next-card').addEventListener('click', () => {
         if(currentCardIndex < currentTopic.cards.length-1){ // bound
             currentCardIndex++; currentFaceIndex = 0; renderCurrentCard();
+        } else{
+            currentCardIndex = 0; currentFaceIndex = 0; renderCurrentCard();
         }
+    });
+    document.getElementById('random-card').addEventListener('click', () => {
+        const randomIndex = Math.floor(Math.random() * currentTopic.cards.length);
+        currentCardIndex = randomIndex; currentFaceIndex = 0;
+        renderCurrentCard();
     });
 }
 
@@ -323,3 +367,28 @@ function deleteTopic(topicIndex){ // delete topic
         loadTopicsForEdit();
     }
 }
+
+// ----------- download --------------------
+
+function downloadFlashcards() {
+    // Get current flashcards data
+    const flashcards = JSON.parse(localStorage.getItem('flashcardTopics')) || [];
+    if(flashcards.length === 0){
+        alert('No flashcards to download!'); return;
+    }
+    
+    // JSON formatting
+    const dataStr = JSON.stringify(flashcards, null, 2);
+    const dateStr = new Date().toISOString().slice(0, 10);
+    
+    // Create download link
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr));
+    element.setAttribute('download', `flashcards_${dateStr}.json`);
+    element.style.display = 'none';
+    
+    // Trigger download
+    document.body.appendChild(element); element.click(); document.body.removeChild(element);
+}
+
+document.getElementById('download-btn').addEventListener('click', downloadFlashcards);
